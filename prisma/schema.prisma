@@ -1,0 +1,22 @@
+generator client {
+  provider = "prisma-client"
+  output   = "./generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model RpEvent {
+  id        String   @id @default(uuid())
+
+  system    String
+  planet    String
+  location  String
+
+  type      String
+  character String
+  content   String
+
+  createdAt DateTime @default(now())
+}
