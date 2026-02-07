@@ -1,0 +1,51 @@
+import { client } from "../../bot/client";
+import { prisma } from "../../db/prisma";
+import { formatRpEvents } from "../../rp/formatter";
+import { summarizeRp } from "../../ai/summarizeRp";
+
+function isRecapIntent(text: string): boolean {
+  const t = text.toLowerCase();
+
+  return (
+    t.includes("o que aconteceu") ||
+    t.includes("resumo") ||
+    t.includes("recap") ||
+    t.includes("ultimas 24") ||
+    t.includes("últimas 24")
+  );
+}
+
+client.on("messageCreate", async (message) => {
+  if (message.author.bot) return;
+
+  const mentioned = message.mentions.has(client.user!.id);
+  if (!mentioned) return;
+
+  const content = message.content.replace(/<@!?(\d+)>/, "").trim();
+
+  if (!isRecapIntent(content)) {
+    await message.reply("Não entendi o pedido 🤖");
+    return;
+  }
+
+  await message.reply(`Um momento ${message.author.displayName}!`);
+
+  const since = new Date(Date.now() - 24 * 60 * 60 * 1000);
+
+  const events = await prisma.rpEvent.findMany({
+    where: {
+      createdAt: { gte: since },
+    },
+    orderBy: { createdAt: "asc" },
+  });
+
+  if (events.length === 0) {
+    await message.reply("Nada relevante ocorreu nas últimas 24 horas.");
+    return;
+  }
+
+  const formatted = formatRpEvents(events);
+  const summary = await summarizeRp(formatted);
+
+  await message.reply(`**Resumo das últimas 24 horas:**\n\n${summary}`);
+});

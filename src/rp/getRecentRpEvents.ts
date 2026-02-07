@@ -11,7 +11,7 @@ export async function getRecentRpEvents({
 }: GetRecentRpEventsOptions) {
   const since = new Date(Date.now() - minutes * 60 * 1000);
 
-  return prisma.rpEvent.findMany({
+  return await prisma.rpEvent.findMany({
     where: {
       createdAt: {
         gte: since,

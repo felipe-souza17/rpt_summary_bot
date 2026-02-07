@@ -9,5 +9,5 @@ client.on("messageCreate", async (message) => {
   if (!parsed) return;
 
   await saveRpEvent(parsed, message.id, message.channelId);
-  console.log(parsed);
+  console.log("[PARSED EVENT]", parsed);
 });
