@@ -8,15 +8,22 @@ datasource db {
 }
 
 model RpEvent {
-  id        String   @id @default(uuid())
-
-  system    String
+  id        String   @id @default(cuid())
   planet    String
   location  String
-
-  type      String
   character String
+  type      RpMessageType
   content   String
 
+  messageId String
+  channelId String
+
   createdAt DateTime @default(now())
+}
+
+
+enum RpMessageType {
+  SAY
+  ACTION
+  NARRATION
 }
