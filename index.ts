@@ -1,7 +1,7 @@
 import "dotenv/config";
-import { client } from "./bot/client";
-import "./discord/listeners/rpMessageCreate";
-import "./discord/listeners/summaryRequest";
+import { client } from "./src/bot/client";
+import "./src/discord/listeners/rpMessageCreate";
+import "./src/discord/listeners/summaryRequest";
 
 client.login(process.env.DISCORD_TOKEN);
 
