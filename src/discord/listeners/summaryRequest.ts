@@ -2,6 +2,9 @@ import { client } from "../../bot/client";
 import { prisma } from "../../db/prisma";
 import { formatRpEvents } from "../../rp/formatter";
 import { summarizeRp } from "../../ai/summarizeRp";
+import { getKnownPlanets } from "../../rp/planetService";
+import { extractPlanetFromText } from "../../rp/extractPlanet";
+import { chunkMessage } from "../../utils/chunckMessage";
 
 function isRecapIntent(text: string): boolean {
   const t = text.toLowerCase();
@@ -24,7 +27,7 @@ client.on("messageCreate", async (message) => {
   const content = message.content.replace(/<@!?(\d+)>/, "").trim();
 
   if (!isRecapIntent(content)) {
-    await message.reply("Não entendi o pedido 🤖");
+    await message.reply("Não entendi o pedido 😭");
     return;
   }
 
@@ -47,5 +50,9 @@ client.on("messageCreate", async (message) => {
   const formatted = formatRpEvents(events);
   const summary = await summarizeRp(formatted);
 
-  await message.reply(`**Resumo das últimas 24 horas:**\n\n${summary}`);
+  const parts = chunkMessage(summary);
+
+  for (const part of parts) {
+    await message.reply(part);
+  }
 });
