@@ -6,6 +6,7 @@ client.on("messageCreate", async (message) => {
   if (!message.webhookId) return;
 
   const parsed = parseRpMessage(message);
+  console.log("[RECEIVED MESSAGE][PARSED]:", parsed);
   if (!parsed) return;
 
   await saveRpEvent(parsed, message.id, message.channelId);
