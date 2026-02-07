@@ -7,4 +7,5 @@ client.login(process.env.DISCORD_TOKEN);
 
 client.once("ready", () => {
   console.log(`Bot online como ${client.user?.tag}`);
+  console.log(`Founded RPT ID: ${process.env.RPT_BOT_ID}`);
 });
