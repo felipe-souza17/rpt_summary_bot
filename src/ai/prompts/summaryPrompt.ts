@@ -23,10 +23,10 @@ Regras:
 
 Formato obrigatório do resumo:
 
-- Máximo de 2 parágrafos por planeta.
+- Separar por Planeta e dentro do planeta a localização ( tipo subtópico ).
+- Máximo de 2 parágrafos por localização daquele planeta.
 - Cada parágrafo com no máximo 3 frases.
 - Se não houver eventos relevantes, declare isso explicitamente.
-
 
 Abaixo estão os eventos organizados por planeta, local e tempo:
 
