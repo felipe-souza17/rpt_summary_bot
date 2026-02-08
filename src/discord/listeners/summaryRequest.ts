@@ -3,7 +3,7 @@ import { prisma } from "../../db/prisma";
 import { formatRpEvents } from "../../rp/formatter";
 import { summarizeRp } from "../../ai/summarizeRp";
 import { getKnownPlanets } from "../../rp/planetService";
-import { extractPlanetFromText } from "../../rp/extractPlanet";
+import { extractPlanetsFromText } from "../../rp/extractPlanet";
 import { chunkMessage } from "../../utils/chunckMessage";
 import { compactRpEvents } from "../../rp/compactRpEvents";
 
@@ -36,15 +36,26 @@ client.on("messageCreate", async (message) => {
 
   const since = new Date(Date.now() - 24 * 60 * 60 * 1000);
 
+  const knownPlanets = await getKnownPlanets();
+  const requestedPlanets = extractPlanetsFromText(content, knownPlanets);
   const events = await prisma.rpEvent.findMany({
     where: {
       createdAt: { gte: since },
+      ...(requestedPlanets.length > 0 && {
+        OR: requestedPlanets.map((planet) => ({
+          planet,
+        })),
+      }),
     },
     orderBy: { createdAt: "asc" },
   });
 
   if (events.length === 0) {
-    await message.reply("Nada relevante ocorreu nas últimas 24 horas.");
+    await message.reply(
+      requestedPlanets.length > 0
+        ? `Nada aconteceu em **${requestedPlanets.join(", ")}** nas últimas 24 horas.`
+        : "Nada relevante ocorreu nas últimas 24 horas.",
+    );
     return;
   }
 

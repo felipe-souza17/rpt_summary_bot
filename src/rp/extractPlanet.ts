@@ -1,14 +1,19 @@
-export function extractPlanetFromText(
+import { extractPlanetName } from "../utils/planetUtils";
+
+export function extractPlanetsFromText(
   text: string,
   knownPlanets: string[],
-): string | null {
-  const normalized = text.toLowerCase();
+): string[] {
+  const lower = text.toLowerCase();
+  const matches: string[] = [];
+  for (const planetLabel of knownPlanets) {
+    const planetName = extractPlanetName(planetLabel);
+    if (!planetName) continue;
 
-  for (const planet of knownPlanets) {
-    if (normalized.includes(planet.toLowerCase())) {
-      return planet;
+    if (lower.includes(planetName)) {
+      matches.push(planetLabel);
     }
   }
 
-  return null;
+  return matches;
 }
